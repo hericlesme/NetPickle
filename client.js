@@ -10,6 +10,15 @@ var pattern = new RegExp("[^A-Za-z]");
 var socket = socketio.connect('http://localhost:3636');
 var rl = readline.createInterface(process.stdin, process.stdout);
 
+const HELP = color(" \
+    \n -- NetPickle - Comandos \
+    \n\
+    \n /nick [username] - Troca o nome de usuario \
+    \n /msg [username] [mensagem] - Envia uma mensagem privada \
+    \n /alert [mensagem] - Envia um alert para todos \
+    \n /exit - Desconecta do chat \
+    \n /help - Exibe esta mensagem \n", "bold+yellow");
+
 /* Prototypes */
 
 String.prototype.replaceAll = function (search, replacement) {
@@ -52,16 +61,7 @@ rl.on('line', function (line) {
 function chat_command(cmd, arg) {
     switch (cmd) {
         case 'help':
-            var help = " \
-            \n -- NetPickle - Comandos \
-            \n\
-            \n /nick [username] - Troca o nome de usuario \
-            \n /msg [username] [mensagem] - Envia uma mensagem privada \
-            \n /alert [mensagem] - Envia um alert para todos \
-            \n /exit - Desconecta do chat \
-            \n /help - Exibe esta mensagem \
-            \n";
-            console_out(help);
+            console_out(HELP);
             break;
         case 'nick':
             var notice = nick + " mudou seu nick para " + arg;
