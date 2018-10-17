@@ -50,16 +50,14 @@ function chat_command(cmd, arg) {
             var message = arg.substr(to.length, arg.length);
             socket.emit('send', { type: 'tell', message: message, to: to, from: nick });
             break;
- 
-        case 'me':
-            var emote = nick + " " + arg;
-            socket.emit('send', { type: 'emote', message: emote });
-            break;
         case 'alert':
             socket.emit('send', {type: 'alert', message: arg});
-            break
+            break;
         case 'exit':
-            socket.emit('send', )
+            var exiting_message = "'" + nick + "' saiu deste mundo.";
+            socket.emit('send', {type: 'notice', message: exiting_message});
+            socket.disconnect();
+            break;
         default:
             console_out("Isto nao eh um comando valido.");
  
@@ -78,10 +76,14 @@ function chat_command(cmd, arg) {
         leader = color("["+data.from+"->"+data.to+"]", "red");
         console_out(leader + data.message);
     }
-    else if (data.type == "emote") {
-        console_out(color(data.message, "cyan"));
-    }
     else if (data.type == "alert") {
         console_out(color('!' + data.message + '!', "blink+black+yellow_bg"));
     }
+
+    socket.on('disconnect', (reason) => {
+        if (reason === 'io server disconnect') {
+            socket.connect();
+        }
+        rl.close();
+    });
 });
