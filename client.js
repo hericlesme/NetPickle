@@ -1,13 +1,28 @@
-/* variables */
-
-var readline = require('readline'),
+const readline = require('readline'),
     socketio = require('socket.io-client'),
+    ArgumentParser = require('argparse').ArgumentParser,
     color = require("ansi-color").set;
+
+const parser = new ArgumentParser({
+    version: '0.0.1',
+    addHelp: true,
+    description: 'NetPickle'
+});
+
+parser.addArgument(
+    ['-u', '--url'],
+    {
+        help: 'the server address',
+        required: true
+    }
+);
+
+let args = parser.parseArgs();
 
 var nick;
 
 var pattern = new RegExp("[^A-Za-z]");
-var socket = socketio.connect('http://localhost:3636');
+var socket = socketio.connect(args.url);
 var rl = readline.createInterface(process.stdin, process.stdout);
 
 const HELP = color(" \
@@ -113,3 +128,4 @@ socket.on('message', function (data) {
         console_out(color('ALERT: ' + data.message + '!', "black+yellow_bg"));
     }
 });
+
